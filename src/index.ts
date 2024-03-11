@@ -27,13 +27,15 @@ export async function run() {
     // await exec.exec(`powershell Expand-Archive -Path ${workerZipPath} -DestinationPath ${__dirname}`);
 
     let vsTestPath = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow\\vstest.console.exe";
-    core.debug(`VsTestPath: ${vsTestPath}`);
+    core.info(`VsTestPath: ${vsTestPath}`);
 
     let args = getArguments();
     core.debug(`Arguments: ${args}`);
 
     core.info(`Running tests...`);
-    await exec.exec(`${vsTestPath} ${testFiles.join(' ')} ${args} /Logger:TRX`);
+    let command = `${vsTestPath} ${testFiles.join(' ')} ${args} /Logger:TRX`;
+    core.info(command);
+    await exec.exec(command);
   } catch (err) {
     core.setFailed(err.message)
   }
