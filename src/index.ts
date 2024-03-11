@@ -33,7 +33,7 @@ export async function run() {
     core.debug(`Arguments: ${args}`);
 
     core.info(`Running tests...`);
-    let command = `${vsTestPath} ${testFiles.join(' ')} ${args} /Logger:TRX`;
+    let command = `"${vsTestPath}" ${testFiles.join(' ')} ${args} /Logger:TRX`;
     core.info(command);
     await exec.exec(command);
   } catch (err) {

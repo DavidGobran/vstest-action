@@ -10075,7 +10075,7 @@ function run() {
             let args = getArguments_1.getArguments();
             core.debug(`Arguments: ${args}`);
             core.info(`Running tests...`);
-            let command = `${vsTestPath} ${testFiles.join(' ')} ${args} /Logger:TRX`;
+            let command = `"${vsTestPath}" ${testFiles.join(' ')} ${args} /Logger:TRX`;
             core.info(command);
             yield exec.exec(command);
         }
