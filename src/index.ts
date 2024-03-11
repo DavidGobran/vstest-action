@@ -5,6 +5,7 @@ import {uploadArtifact} from './uploadArtifact'
 import {getTestAssemblies} from './getTestAssemblies'
 import {getArguments} from './getArguments'
 import {getVsTestPath} from './getVsTestPath'
+import { get } from 'http';
 
 export async function run() {
   try {
@@ -26,7 +27,7 @@ export async function run() {
     // core.debug(`workerZipPath is ${workerZipPath}`);
     // await exec.exec(`powershell Expand-Archive -Path ${workerZipPath} -DestinationPath ${__dirname}`);
 
-    let vsTestPath = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow\\vstest.console.exe";
+    let vsTestPath = getVsTestPath();
     core.info(`VsTestPath: ${vsTestPath}`);
 
     let args = getArguments();
@@ -34,7 +35,6 @@ export async function run() {
 
     core.info(`Running tests...`);
     let command = `"${vsTestPath}" ${testFiles.join(' ')} ${args} /Logger:TRX`;
-    core.info(command);
     await exec.exec(command);
   } catch (err) {
     core.setFailed(err.message)

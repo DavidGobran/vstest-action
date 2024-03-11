@@ -9923,7 +9923,7 @@ function getArguments() {
     }
     let runSettingsFile = core.getInput('runSettingsFile');
     if (runSettingsFile) {
-        args += `/Settings:${runSettingsFile} `;
+        args += `/Settings:"${runSettingsFile}" `;
     }
     let pathToCustomTestAdapters = core.getInput('pathToCustomTestAdapters');
     if (pathToCustomTestAdapters) {
@@ -10013,6 +10013,53 @@ exports.getTestAssemblies = getTestAssemblies;
 
 /***/ }),
 
+/***/ 412:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getVsTestPath = void 0;
+const core = __importStar(__nccwpck_require__(2186));
+const path = __importStar(__nccwpck_require__(1017));
+function getVsTestPath() {
+    let vstestLocationMethod = core.getInput('vstestLocationMethod');
+    if (vstestLocationMethod && vstestLocationMethod.toUpperCase() === "LOCATION") {
+        return core.getInput('vstestLocation');
+    }
+    let vsTestVersion = core.getInput('vsTestVersion');
+    if (vsTestVersion && vsTestVersion === "14.0") {
+        return path.join(__dirname, 'win-x64/VsTest/v140/vstest.console.exe');
+    }
+    if (vsTestVersion && vsTestVersion === "15.0") {
+        return path.join(__dirname, 'win-x64/VsTest/v150/Common7/IDE/Extensions/TestPlatform/vstest.console.exe');
+    }
+    return path.join(__dirname, 'win-x64/VsTest/v160/Common7/IDE/Extensions/TestPlatform/vstest.console.exe');
+}
+exports.getVsTestPath = getVsTestPath;
+
+
+/***/ }),
+
 /***/ 6144:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -10053,6 +10100,7 @@ const exec = __importStar(__nccwpck_require__(1514));
 const uploadArtifact_1 = __nccwpck_require__(5898);
 const getTestAssemblies_1 = __nccwpck_require__(2209);
 const getArguments_1 = __nccwpck_require__(6751);
+const getVsTestPath_1 = __nccwpck_require__(412);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -10070,13 +10118,12 @@ function run() {
             // core.info(`Unzipping test tools...`);
             // core.debug(`workerZipPath is ${workerZipPath}`);
             // await exec.exec(`powershell Expand-Archive -Path ${workerZipPath} -DestinationPath ${__dirname}`);
-            let vsTestPath = "C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\Common7\\IDE\\CommonExtensions\\Microsoft\\TestWindow\\vstest.console.exe";
+            let vsTestPath = getVsTestPath_1.getVsTestPath();
             core.info(`VsTestPath: ${vsTestPath}`);
             let args = getArguments_1.getArguments();
             core.debug(`Arguments: ${args}`);
             core.info(`Running tests...`);
             let command = `"${vsTestPath}" ${testFiles.join(' ')} ${args} /Logger:TRX`;
-            core.info(command);
             yield exec.exec(command);
         }
         catch (err) {

@@ -15,7 +15,7 @@ export function getArguments(): string {
 
   let runSettingsFile = core.getInput('runSettingsFile')
   if(runSettingsFile) {
-    args += `/Settings:${runSettingsFile} `
+    args += `/Settings:"${runSettingsFile}" `
   }
 
   let pathToCustomTestAdapters = core.getInput('pathToCustomTestAdapters')
